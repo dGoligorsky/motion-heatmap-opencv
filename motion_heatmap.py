@@ -49,7 +49,7 @@ def main():
                 accum_image, cv2.COLORMAP_HOT)
 
             video_frame = cv2.addWeighted(
-                frame, 0.2, color_image_video, 0.8, 0)
+                frame, 0.3, color_image_video, 1.0, 0)
 
             name = "./frames/frame%d.jpg" % i
             cv2.imwrite(name, video_frame)
@@ -64,7 +64,7 @@ def main():
     make_video('./frames/', './output.mp4')
 
     color_image = cv2.applyColorMap(accum_image, cv2.COLORMAP_HOT)
-    result_overlay = cv2.addWeighted(first_frame, 0.2, color_image, 0.8, 0)
+    result_overlay = cv2.addWeighted(first_frame, 0.3, color_image, 1.0, 0)
 
     # save the final heatmap
     cv2.imwrite('diff-overlay.jpg', result_overlay)
