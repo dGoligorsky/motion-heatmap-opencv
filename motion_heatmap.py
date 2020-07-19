@@ -31,7 +31,7 @@ def main():
             cv2.imwrite('./frame.jpg', frame)
             cv2.imwrite('./diff-bkgnd-frame.jpg', filter)
 
-            threshold = 2
+            threshold = 140
             maxValue = 255
 
             # adaptive thresholding... you can remove this if you want. not sure it's an improvement
