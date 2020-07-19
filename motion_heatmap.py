@@ -6,7 +6,7 @@ from progress.bar import Bar
 
 
 def main():
-    capture = cv2.VideoCapture('0min_motionandbrightness_stable.mp4')
+    capture = cv2.VideoCapture('30Min-5.m4v')
     background_subtractor = cv2.bgsegm.createBackgroundSubtractorMOG()
     length = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
@@ -31,17 +31,17 @@ def main():
             cv2.imwrite('./frame.jpg', frame)
             cv2.imwrite('./diff-bkgnd-frame.jpg', filter)
 
-            threshold = 150
-            maxValue = 150
+            threshold = 40
+            maxValue = 255
             ret, th1 = cv2.threshold(
-                filter, threshold, maxValue, cv2.THRESH_BINARY)
+                filter, threshold, maxValue, cv2.THRESH_TRUNC)
 
             # add to the accumulated image
             accum_image = cv2.add(accum_image, th1)
             cv2.imwrite('./mask.jpg', accum_image)
 
             color_image_video = cv2.applyColorMap(
-                accum_image, cv2.COLORMAP_SUMMER)
+                accum_image, cv2.COLORMAP_HOT)
 
             video_frame = cv2.addWeighted(
                 frame, 0.2, color_image_video, 0.9, 0)
@@ -55,10 +55,11 @@ def main():
 
     bar.finish()
 
-    make_video('./frames/', './output.avi')
+    # make_video('./frames/', './output.avi')
+    make_video('./frames/', './output.mp4')
 
-    color_image = cv2.applyColorMap(accum_image, cv2.COLORMAP_AUTUMN)
-    result_overlay = cv2.addWeighted(first_frame, 0.2, color_image, 0.9, 0)
+    color_image = cv2.applyColorMap(accum_image, cv2.COLORMAP_HOT)
+    result_overlay = cv2.addWeighted(first_frame, 0.2, color_image, 0.8, 0)
 
     # save the final heatmap
     cv2.imwrite('diff-overlay.jpg', result_overlay)
