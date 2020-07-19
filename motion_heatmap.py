@@ -6,7 +6,7 @@ from progress.bar import Bar
 
 
 def main():
-    capture = cv2.VideoCapture('input.mp4')
+    capture = cv2.VideoCapture('0min_motionandbrightness_stable.mp4')
     background_subtractor = cv2.bgsegm.createBackgroundSubtractorMOG()
     length = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
@@ -26,21 +26,25 @@ def main():
             first_iteration_indicator = 0
         else:
 
-            filter = background_subtractor.apply(frame)  # remove the background
+            filter = background_subtractor.apply(
+                frame)  # remove the background
             cv2.imwrite('./frame.jpg', frame)
             cv2.imwrite('./diff-bkgnd-frame.jpg', filter)
 
-            threshold = 2
-            maxValue = 2
-            ret, th1 = cv2.threshold(filter, threshold, maxValue, cv2.THRESH_BINARY)
+            threshold = 150
+            maxValue = 150
+            ret, th1 = cv2.threshold(
+                filter, threshold, maxValue, cv2.THRESH_BINARY)
 
             # add to the accumulated image
             accum_image = cv2.add(accum_image, th1)
             cv2.imwrite('./mask.jpg', accum_image)
 
-            color_image_video = cv2.applyColorMap(accum_image, cv2.COLORMAP_SUMMER)
+            color_image_video = cv2.applyColorMap(
+                accum_image, cv2.COLORMAP_SUMMER)
 
-            video_frame = cv2.addWeighted(frame, 0.7, color_image_video, 0.7, 0)
+            video_frame = cv2.addWeighted(
+                frame, 0.2, color_image_video, 0.9, 0)
 
             name = "./frames/frame%d.jpg" % i
             cv2.imwrite(name, video_frame)
@@ -53,8 +57,8 @@ def main():
 
     make_video('./frames/', './output.avi')
 
-    color_image = cv2.applyColorMap(accum_image, cv2.COLORMAP_HOT)
-    result_overlay = cv2.addWeighted(first_frame, 0.7, color_image, 0.7, 0)
+    color_image = cv2.applyColorMap(accum_image, cv2.COLORMAP_AUTUMN)
+    result_overlay = cv2.addWeighted(first_frame, 0.2, color_image, 0.9, 0)
 
     # save the final heatmap
     cv2.imwrite('diff-overlay.jpg', result_overlay)
