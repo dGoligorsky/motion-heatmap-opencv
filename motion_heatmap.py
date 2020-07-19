@@ -6,7 +6,7 @@ from progress.bar import Bar
 
 
 def main():
-    capture = cv2.VideoCapture('30Min-5.m4v')
+    capture = cv2.VideoCapture('C1_90Min.m4v')
     background_subtractor = cv2.bgsegm.createBackgroundSubtractorMOG()
     length = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
@@ -31,8 +31,13 @@ def main():
             cv2.imwrite('./frame.jpg', frame)
             cv2.imwrite('./diff-bkgnd-frame.jpg', filter)
 
-            threshold = 40
+            threshold = 2
             maxValue = 255
+
+            # adaptive thresholding... you can remove this if you want. not sure it's an improvement
+            th1 = cv2.adaptiveThreshold(filter, maxValue, cv2.ADAPTIVE_THRESH_MEAN_C,
+                                        cv2.THRESH_BINARY_INV, 3, 2)
+
             ret, th1 = cv2.threshold(
                 filter, threshold, maxValue, cv2.THRESH_TRUNC)
 
@@ -44,7 +49,7 @@ def main():
                 accum_image, cv2.COLORMAP_HOT)
 
             video_frame = cv2.addWeighted(
-                frame, 0.2, color_image_video, 0.9, 0)
+                frame, 0.2, color_image_video, 0.8, 0)
 
             name = "./frames/frame%d.jpg" % i
             cv2.imwrite(name, video_frame)
